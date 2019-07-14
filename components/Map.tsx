@@ -7,31 +7,9 @@ import { LoadingGuard } from './LoadingGuard';
 
 mapboxgl.accessToken = 'pk.eyJ1IjoiamFja2RlcnJ5cm9zZSIsImEiOiJjankybGNkNWQwcHVpM2JvOXdmNzNvc2FlIn0.ahjk12cEB4FAaRR7IEXBag';
 
-var geojson = {
-  type: 'FeatureCollection',
-  features: [{
-    type: 'Feature',
-    geometry: {
-      type: 'Point',
-      coordinates: [144.993523, -37.801265] as [number, number],
-    },
-    properties: {
-      title: 'Common code',
-      description: '8 Studly St, Abottsford'
-    }
-  },
-  {
-    type: 'Feature',
-    geometry: {
-      type: 'Point',
-      coordinates: [144.988180, -37.805749] as [number, number],
-    },
-    properties: {
-      title: 'Art processors',
-      description: '102 Rokeby St, Collingwood'
-    }
-  }]
-};
+const getLngLat = (long?: string, lat?: string): [number, number] => {
+  return [ long ? parseFloat(long) : 0, lat ? parseFloat(lat) : 0 ];
+}
 
 type Props = {
   data: BusinessListQueryQuery;
@@ -85,19 +63,18 @@ class MapView extends React.Component<Props, State> {
 
     this.map.on('load', () => {
       if (!this.map) return;
-       geojson.features.forEach((marker) => {
+      this.props.data.businesses.forEach(business => {
          if (!this.map) return;
+         const popup = new mapboxgl.Popup({ offset: 8 })
+            .setHTML(`<h4>${business.name}</h4><p>Number of reviews: ${business.reviews.length}</p>`);
+
          const el = document.createElement('div');
          el.className = 'marker';
-
-         const popup = new mapboxgl.Popup({ offset: 8 })
-           .setHTML(`<h4>${marker.properties.title}</h4><p>${marker.properties.description}</p>`);
-
          new mapboxgl.Marker(el)
-           .setLngLat(marker.geometry.coordinates)
+           .setLngLat(getLngLat(business.long, business.lat))
            .setPopup(popup)
            .addTo(this.map);
-       });
+      });
     });
   }
 

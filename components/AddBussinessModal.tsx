@@ -42,9 +42,20 @@ const AddBussinessModalView = ({ show, onHide, insertBussiness }: InnerProps) =>
 
   const validate = (values: FormValues) => {
     let errors: Partial<FormValues> = {};
-    if (!values.name) { errors.name = 'required'; }
-    if (!values.lat) { errors.lat = 'required'; }
-    if (!values.long) { errors.long = 'required'; }
+    if (!values.name) {
+      errors.name = 'A name is required';
+    }
+
+    const longNum = parseFloat(values.lat);
+    if (isNaN(longNum) || longNum < -180 || longNum > 180) {
+      errors.long = 'latitude must be between -180 and 180';
+    }
+
+    const latNum = parseFloat(values.lat);
+    if (isNaN(latNum) || latNum < -90 || latNum > 90) {
+      errors.lat = 'latitude must be between -90 and 90';
+    }
+
     return errors;
   }
 
@@ -74,18 +85,6 @@ const AddBussinessModalView = ({ show, onHide, insertBussiness }: InnerProps) =>
               </Form.Group>
 
               <Form.Group>
-                <Form.Label>Latitude</Form.Label>
-                <Form.Control
-                  type="text"
-                  name="lat"
-                  value={values.lat}
-                  onChange={handleChange}
-                  isValid={touched.lat && !errors.lat}
-                />
-                <Form.Control.Feedback>{errors.lat}</Form.Control.Feedback>
-              </Form.Group>
-
-              <Form.Group>
                 <Form.Label>Longitude</Form.Label>
                 <Form.Control
                   type="text"
@@ -95,6 +94,18 @@ const AddBussinessModalView = ({ show, onHide, insertBussiness }: InnerProps) =>
                   isValid={touched.long && !errors.long}
                 />
                 <Form.Control.Feedback>{errors.long}</Form.Control.Feedback>
+              </Form.Group>
+
+              <Form.Group>
+                <Form.Label>Latitude</Form.Label>
+                <Form.Control
+                  type="text"
+                  name="lat"
+                  value={values.lat}
+                  onChange={handleChange}
+                  isValid={touched.lat && !errors.lat}
+                />
+                <Form.Control.Feedback>{errors.lat}</Form.Control.Feedback>
               </Form.Group>
 
             </Modal.Body>

@@ -872,7 +872,10 @@ export type BusinessListQueryQueryVariables = {};
 
 export type BusinessListQueryQuery = { __typename?: "query_root" } & {
   businesses: Array<
-    { __typename?: "businesses" } & Pick<Businesses, "id" | "name"> & {
+    { __typename?: "businesses" } & Pick<
+      Businesses,
+      "id" | "name" | "lat" | "long"
+    > & {
         reviews: Array<
           { __typename?: "reviews" } & Pick<Reviews, "id" | "rating" | "text">
         >;
@@ -946,6 +949,8 @@ export const BusinessListQueryDocument = gql`
     businesses(limit: 10) {
       id
       name
+      lat
+      long
       reviews {
         id
         rating

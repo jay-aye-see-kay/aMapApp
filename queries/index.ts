@@ -7,6 +7,8 @@ const businessListQuery = gql`
     businesses(limit:10){
       id
       name
+      lat
+      long
       reviews {
         id
         rating
