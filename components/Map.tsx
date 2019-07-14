@@ -11,6 +11,23 @@ const getLngLat = (long?: string, lat?: string): [number, number] => {
   return [ long ? parseFloat(long) : 0, lat ? parseFloat(lat) : 0 ];
 }
 
+const businessesToGeoJson = (businesses: BusinessListQueryQuery["businesses"]) => {
+  return {
+    type: 'FeatureCollection' as 'FeatureCollection',
+    features: businesses.map(business => ({
+      type: 'Feature' as 'Feature',
+      geometry: {
+        type: 'Point' as 'Point',
+        coordinates: getLngLat(business.long, business.lat),
+      },
+      properties: {
+        title: business.name,
+        icon: 'triangle',
+      }
+    })),
+  }
+}
+
 type Props = {
   data: BusinessListQueryQuery;
 };
@@ -50,6 +67,9 @@ class MapView extends React.Component<Props, State> {
       zoom
     });
 
+    // TMP
+    (window as any).aMap = this.map;
+
     this.map.on('move', () => {
       if (!this.map) return;
 
@@ -62,21 +82,41 @@ class MapView extends React.Component<Props, State> {
     });
 
     this.map.on('load', this.drawMarkers);
+    this.map.on('click', 'places', (e) => {
+      if (!this.map || !e.features) return;
+
+      const coordinates = ((e.features[0].geometry as any).coordinates as any).slice();
+      const title = (e.features[0].properties as any).title;
+
+      // Ensure that if the map is zoomed out such that multiple
+      // copies of the feature are visible, the popup appears
+      // over the copy being pointed to.
+      while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
+        coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
+      }
+
+      new mapboxgl.Popup()
+        .setLngLat(coordinates)
+        .setHTML(title)
+        .addTo(this.map);
+    })
   }
 
   private drawMarkers = () => {
     if (!this.map) return;
-    this.props.data.businesses.forEach(business => {
-      if (!this.map) return;
-      const popup = new mapboxgl.Popup({offset: 8})
-        .setHTML(`<h4>${business.name}</h4><p>Number of reviews: ${business.reviews.length}</p>`);
+    this.map.addSource('businesses', {
+      type: 'geojson',
+      data: businessesToGeoJson(this.props.data.businesses),
+    });
 
-      const el = document.createElement('div');
-      el.className = 'marker';
-      new mapboxgl.Marker(el)
-        .setLngLat(getLngLat(business.long, business.lat))
-        .setPopup(popup)
-        .addTo(this.map);
+    this.map.addLayer({
+      id: 'places',
+      type: 'symbol',
+      source: 'businesses',
+      layout: {
+        "icon-image": "{icon}-15",
+        "icon-allow-overlap": true,
+      }
     });
   }
 
