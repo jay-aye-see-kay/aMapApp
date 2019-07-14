@@ -2,8 +2,8 @@
 /* eslint-disable */
 
 import gql from "graphql-tag";
-import * as React from "react";
 import * as ReactApollo from "react-apollo";
+import * as React from "react";
 export type Maybe<T> = T | null;
 export type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>;
 /** All built-in and custom scalars, mapped to their actual values */
@@ -849,6 +849,25 @@ export type Uuid_Comparison_Exp = {
   _neq?: Maybe<Scalars["uuid"]>;
   _nin?: Maybe<Array<Scalars["uuid"]>>;
 };
+export type InsertBussinessMutationVariables = {
+  lat: Scalars["numeric"];
+  long: Scalars["numeric"];
+  name: Scalars["String"];
+};
+
+export type InsertBussinessMutation = { __typename?: "mutation_root" } & {
+  insert_businesses: Maybe<
+    { __typename?: "businesses_mutation_response" } & {
+      returning: Array<
+        { __typename?: "businesses" } & Pick<
+          Businesses,
+          "id" | "lat" | "long" | "name"
+        >
+      >;
+    }
+  >;
+};
+
 export type BusinessListQueryQueryVariables = {};
 
 export type BusinessListQueryQuery = { __typename?: "query_root" } & {
@@ -861,6 +880,67 @@ export type BusinessListQueryQuery = { __typename?: "query_root" } & {
   >;
 };
 
+export const InsertBussinessDocument = gql`
+  mutation insertBussiness($lat: numeric!, $long: numeric!, $name: String!) {
+    insert_businesses(objects: { lat: $lat, long: $long, name: $name }) {
+      returning {
+        id
+        lat
+        long
+        name
+      }
+    }
+  }
+`;
+export type InsertBussinessMutationFn = ReactApollo.MutationFn<
+  InsertBussinessMutation,
+  InsertBussinessMutationVariables
+>;
+export type InsertBussinessComponentProps = Omit<
+  ReactApollo.MutationProps<
+    InsertBussinessMutation,
+    InsertBussinessMutationVariables
+  >,
+  "mutation"
+>;
+
+export const InsertBussinessComponent = (
+  props: InsertBussinessComponentProps
+) => (
+  <ReactApollo.Mutation<
+    InsertBussinessMutation,
+    InsertBussinessMutationVariables
+  >
+    mutation={InsertBussinessDocument}
+    {...props}
+  />
+);
+
+export type InsertBussinessProps<TChildProps = {}> = Partial<
+  ReactApollo.MutateProps<
+    InsertBussinessMutation,
+    InsertBussinessMutationVariables
+  >
+> &
+  TChildProps;
+export function withInsertBussiness<TProps, TChildProps = {}>(
+  operationOptions?: ReactApollo.OperationOption<
+    TProps,
+    InsertBussinessMutation,
+    InsertBussinessMutationVariables,
+    InsertBussinessProps<TChildProps>
+  >
+) {
+  return ReactApollo.withMutation<
+    TProps,
+    InsertBussinessMutation,
+    InsertBussinessMutationVariables,
+    InsertBussinessProps<TChildProps>
+  >(InsertBussinessDocument, {
+    alias: "withInsertBussiness",
+    ...operationOptions
+  });
+}
 export const BusinessListQueryDocument = gql`
   query businessListQuery {
     businesses(limit: 10) {

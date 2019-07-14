@@ -27,8 +27,8 @@ var geojson = {
       coordinates: [144.988180, -37.805749] as [number, number],
     },
     properties: {
-      title: 'Mapbox',
-      description: 'San Francisco, California'
+      title: 'Art processors',
+      description: '102 Rokeby St, Collingwood'
     }
   }]
 };
@@ -91,7 +91,7 @@ class MapView extends React.Component<Props, State> {
          el.className = 'marker';
 
          const popup = new mapboxgl.Popup({ offset: 8 })
-           .setHTML(`<h3>${marker.properties.title}</h3><p>${marker.properties.description}</p>`);
+           .setHTML(`<h4>${marker.properties.title}</h4><p>${marker.properties.description}</p>`);
 
          new mapboxgl.Marker(el)
            .setLngLat(marker.geometry.coordinates)
