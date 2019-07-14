@@ -1,6 +1,8 @@
 {
   "name": "with-apollo",
   "version": "2.0.0",
+  "author": "",
+  "license": "ISC",
   "scripts": {
     "dev": "graphql-codegen && next",
     "build": "next build",
@@ -8,6 +10,17 @@
     "generate": "graphql-codegen"
   },
   "dependencies": {
+    "apollo-boost": "^0.4.3",
+    "graphql": "^14.4.2",
+    "isomorphic-unfetch": "^3.0.0",
+    "next": "^9.0.1",
+    "react": "^16.8.6",
+    "react-apollo": "^2.5.8",
+    "react-bootstrap": "^1.0.0-beta.9",
+    "react-dom": "^16.8.6",
+    "react-map-gl": "^5.0.4"
+  },
+  "devDependencies": {
     "@graphql-codegen/add": "^1.4.0",
     "@graphql-codegen/cli": "^1.4.0",
     "@graphql-codegen/typescript": "^1.4.0",
@@ -18,16 +31,7 @@
     "@types/react": "^16.8.23",
     "@types/react-bootstrap": "^0.32.19",
     "@types/react-dom": "^16.8.4",
-    "apollo-boost": "^0.4.3",
-    "graphql": "^14.4.2",
-    "isomorphic-unfetch": "^3.0.0",
-    "next": "^9.0.1",
-    "react": "^16.8.6",
-    "react-apollo": "^2.5.8",
-    "react-bootstrap": "^1.0.0-beta.9",
-    "react-dom": "^16.8.6",
+    "@types/react-map-gl": "^5.0.0",
     "typescript": "^3.5.3"
-  },
-  "author": "",
-  "license": "ISC"
+  }
 }
