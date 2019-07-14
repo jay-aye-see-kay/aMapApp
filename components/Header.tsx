@@ -1,7 +1,6 @@
 import Link from 'next/link'
 
-const Header = () => (
+export const Header = () => (
   <div>header</div>
 )
 
-export default Header

@@ -1,17 +1,19 @@
 import React from 'react'
-import initApollo from './init-apollo'
+import { initApollo } from './init-apollo'
 import Head from 'next/head'
 import { getDataFromTree } from 'react-apollo'
+import { ApolloClient } from 'apollo-boost'
 
-export default App => {
+export const withApollo = (AppComponent: any) => {
   return class Apollo extends React.Component {
     static displayName = 'withApollo(App)'
-    static async getInitialProps (ctx) {
+
+    static async getInitialProps (ctx: any) {
       const { Component, router } = ctx
 
       let appProps = {}
-      if (App.getInitialProps) {
-        appProps = await App.getInitialProps(ctx)
+      if (AppComponent.getInitialProps) {
+        appProps = await AppComponent.getInitialProps(ctx)
       }
 
       // Run all GraphQL queries in the component tree
@@ -21,7 +23,7 @@ export default App => {
         try {
           // Run all GraphQL queries
           await getDataFromTree(
-            <App
+            <AppComponent
               {...appProps}
               Component={Component}
               router={router}
@@ -49,13 +51,15 @@ export default App => {
       }
     }
 
-    constructor (props) {
+    apolloClient: ApolloClient<any>;
+    constructor (props: any) {
       super(props)
       this.apolloClient = initApollo(props.apolloState)
     }
 
     render () {
-      return <App {...this.props} apolloClient={this.apolloClient} />
+      return <AppComponent {...this.props} apolloClient={this.apolloClient} />
     }
   }
 }
+

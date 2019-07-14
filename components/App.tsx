@@ -1,4 +1,10 @@
-export default ({ children }) => (
+import React from 'react';
+
+type Props = {
+  children: React.ReactChildren | React.ReactChild[];
+};
+
+export const App = ({ children }: Props) => (
   <main>
     {children}
     <style jsx global>{`
