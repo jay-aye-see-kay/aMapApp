@@ -1,8 +1,9 @@
 overwrite: true
 schema: http://localhost:8080/v1/graphql
 documents:
-  - 'components/**/*.{ts,tsx}'
-  - 'pages/**/*.{ts,tsx}'
+  - components/**/*.{ts,tsx}
+  - pages/**/*.{ts,tsx}
+  - queries/**/*.{ts,tsx,graphql}
 generates:
   generated/graphql.tsx:
     plugins:

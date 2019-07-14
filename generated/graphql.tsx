@@ -2,7 +2,10 @@
 /* eslint-disable */
 
 import gql from "graphql-tag";
+import * as React from "react";
+import * as ReactApollo from "react-apollo";
 export type Maybe<T> = T | null;
+export type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>;
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
   ID: string;
@@ -846,9 +849,9 @@ export type Uuid_Comparison_Exp = {
   _neq?: Maybe<Scalars["uuid"]>;
   _nin?: Maybe<Array<Scalars["uuid"]>>;
 };
-export type Unnamed_1_QueryVariables = {};
+export type BusinessListQueryQueryVariables = {};
 
-export type Unnamed_1_Query = { __typename?: "query_root" } & {
+export type BusinessListQueryQuery = { __typename?: "query_root" } & {
   businesses: Array<
     { __typename?: "businesses" } & Pick<Businesses, "id" | "name"> & {
         reviews: Array<
@@ -857,3 +860,56 @@ export type Unnamed_1_Query = { __typename?: "query_root" } & {
       }
   >;
 };
+
+export const BusinessListQueryDocument = gql`
+  query businessListQuery {
+    businesses(limit: 10) {
+      id
+      name
+      reviews {
+        id
+        rating
+        text
+      }
+    }
+  }
+`;
+export type BusinessListQueryComponentProps = Omit<
+  ReactApollo.QueryProps<
+    BusinessListQueryQuery,
+    BusinessListQueryQueryVariables
+  >,
+  "query"
+>;
+
+export const BusinessListQueryComponent = (
+  props: BusinessListQueryComponentProps
+) => (
+  <ReactApollo.Query<BusinessListQueryQuery, BusinessListQueryQueryVariables>
+    query={BusinessListQueryDocument}
+    {...props}
+  />
+);
+
+export type BusinessListQueryProps<TChildProps = {}> = Partial<
+  ReactApollo.DataProps<BusinessListQueryQuery, BusinessListQueryQueryVariables>
+> &
+  TChildProps;
+export function withBusinessListQuery<TProps, TChildProps = {}>(
+  operationOptions?: ReactApollo.OperationOption<
+    TProps,
+    BusinessListQueryQuery,
+    BusinessListQueryQueryVariables,
+    BusinessListQueryProps<TChildProps>
+  >
+) {
+  return ReactApollo.withQuery<
+    TProps,
+    BusinessListQueryQuery,
+    BusinessListQueryQueryVariables,
+    BusinessListQueryProps<TChildProps>
+  >(BusinessListQueryDocument, {
+    alias: "withBusinessListQuery",
+    ...operationOptions
+  });
+}

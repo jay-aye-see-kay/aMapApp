@@ -1,29 +1,29 @@
-import { Query } from 'react-apollo';
-import gql from 'graphql-tag';
+import React from 'react';
 
-// import { } from '../generated/graphql';
+import { BusinessListQueryComponent, BusinessListQueryQuery } from '../generated/graphql';
 
-const MapView = ({ data }: any) => {
-  console.log(data);
-  return <div />
+import { LoadingGuard } from './LoadingGuard';
+
+
+type Props = {
+  data: BusinessListQueryQuery;
+};
+
+const MapView = ({ data }: Props) => {
+  return (
+    <div>{JSON.stringify(data)}</div>
+  )
 }
-
-const businessListQuery = gql`
-  query {
-    businesses(limit:10){
-      id
-      name
-      reviews {
-        id
-        rating
-        text
-      }
-    }
-  }
-`;
 
 export const Map = () => {
   return (
-    <div />
+    <BusinessListQueryComponent>
+      {({ loading, error, data }) => (
+        <LoadingGuard loading={loading} error={error}>
+          {data && <MapView data={data} />}
+        </LoadingGuard>
+      )}
+    </BusinessListQueryComponent>
   )
 }
+
