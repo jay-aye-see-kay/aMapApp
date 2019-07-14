@@ -7,30 +7,30 @@ import { LoadingGuard } from './LoadingGuard';
 
 mapboxgl.accessToken = 'pk.eyJ1IjoiamFja2RlcnJ5cm9zZSIsImEiOiJjankybGNkNWQwcHVpM2JvOXdmNzNvc2FlIn0.ahjk12cEB4FAaRR7IEXBag';
 
-const mapStyle = {
-  version: 8,
-  sources: {
-    points: {
-      type: 'geojson',
-      data: {
-        type: 'FeatureCollection',
-        features: [
-          {type: 'Feature', geometry: {type: 'Point', coordinates: [-37.8, 144.9]}}
-        ]
-      }
+var geojson = {
+  type: 'FeatureCollection',
+  features: [{
+    type: 'Feature',
+    geometry: {
+      type: 'Point',
+      coordinates: [144.993523, -37.801265] as [number, number],
+    },
+    properties: {
+      title: 'Common code',
+      description: '8 Studly St, Abottsford'
     }
   },
-  layers: [
-    {
-      id: 'my-layer',
-      type: 'circle',
-      source: 'points',
-      paint: {
-        'circle-color': '#f00',
-        'circle-radius': 4
-      }
+  {
+    type: 'Feature',
+    geometry: {
+      type: 'Point',
+      coordinates: [144.988180, -37.805749] as [number, number],
+    },
+    properties: {
+      title: 'Mapbox',
+      description: 'San Francisco, California'
     }
-  ]
+  }]
 };
 
 type Props = {
@@ -47,7 +47,7 @@ const initialState: State = {
   // melbourne for now
   lat: -37.808163434,
   lng: 144.957829502,
-  zoom: 8
+  zoom: 12,
 };
 
 class MapView extends React.Component<Props, State> {
@@ -82,6 +82,23 @@ class MapView extends React.Component<Props, State> {
         zoom: this.map.getZoom()
       });
     });
+
+    this.map.on('load', () => {
+      if (!this.map) return;
+       geojson.features.forEach((marker) => {
+         if (!this.map) return;
+         const el = document.createElement('div');
+         el.className = 'marker';
+
+         const popup = new mapboxgl.Popup({ offset: 8 })
+           .setHTML(`<h3>${marker.properties.title}</h3><p>${marker.properties.description}</p>`);
+
+         new mapboxgl.Marker(el)
+           .setLngLat(marker.geometry.coordinates)
+           .setPopup(popup)
+           .addTo(this.map);
+       });
+    });
   }
 
   render = () => {
@@ -94,7 +111,6 @@ class MapView extends React.Component<Props, State> {
           width: '100%'
         }}
         ref={this.mapRef}
-        className="absolute top right left bottom"
       />
     )
   }
