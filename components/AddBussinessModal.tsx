@@ -6,19 +6,6 @@ import { Formik, FormikActions, FormikProps, Field, ErrorMessage } from 'formik'
 
 import { InsertBussinessComponent, InsertBussinessMutation, InsertBussinessMutationVariables } from '../generated/graphql';
 
-const insertBussiness = gql`
-  mutation insertBussiness ($lat: numeric!, $long: numeric!, $name: String!) {
-    insert_businesses(objects: { lat: $lat, long: $long, name: $name }) {
-      returning {
-        id
-        lat
-        long
-        name
-      }
-    }
-  }
-`;
-
 type OuterProps = {
   show: boolean;
   onHide: () => void;
@@ -65,7 +52,7 @@ const AddBussinessModalView = ({ show, onHide, insertBussiness }: InnerProps) =>
         initialValues={initialValues}
         validate={validate}
         onSubmit={onSave}
-        render={({ handleReset, handleSubmit, handleChange, values, errors, touched, isValid }: FormikProps<FormValues>) => (
+        render={({ handleReset, handleSubmit, handleChange, values, errors, touched, setFieldValue }: FormikProps<FormValues>) => (
           <form onReset={handleReset} onSubmit={handleSubmit}>
             <Modal.Header closeButton>
               <Modal.Title>Modal heading</Modal.Title>
@@ -81,7 +68,7 @@ const AddBussinessModalView = ({ show, onHide, insertBussiness }: InnerProps) =>
                   onChange={handleChange}
                   isValid={touched.name && !errors.name}
                 />
-                <Form.Control.Feedback>{errors.name}</Form.Control.Feedback>
+                {!!(touched.name && errors.name) && <Alert>{errors.name}</Alert>}
               </Form.Group>
 
               <Form.Group>
@@ -93,7 +80,7 @@ const AddBussinessModalView = ({ show, onHide, insertBussiness }: InnerProps) =>
                   onChange={handleChange}
                   isValid={touched.long && !errors.long}
                 />
-                <Form.Control.Feedback>{errors.long}</Form.Control.Feedback>
+                {!!(touched.long && errors.long) && <Alert>{errors.long}</Alert>}
               </Form.Group>
 
               <Form.Group>
@@ -105,8 +92,18 @@ const AddBussinessModalView = ({ show, onHide, insertBussiness }: InnerProps) =>
                   onChange={handleChange}
                   isValid={touched.lat && !errors.lat}
                 />
-                <Form.Control.Feedback>{errors.lat}</Form.Control.Feedback>
+                {!!(touched.lat && errors.lat) && <Alert>{errors.lat}</Alert>}
               </Form.Group>
+
+              <Button
+                variant="secondary"
+                onClick={() => {
+                  const { lat, long } = generateRandomMelbourneGps();
+                  setFieldValue('long', long);
+                  setFieldValue('lat', lat);
+                }}>
+                Set random melbourne lat long
+            </Button>
 
             </Modal.Body>
             <Modal.Footer>
@@ -121,6 +118,19 @@ const AddBussinessModalView = ({ show, onHide, insertBussiness }: InnerProps) =>
 };
 
 
+const insertBussiness = gql`
+  mutation insertBussiness ($lat: numeric!, $long: numeric!, $name: String!) {
+    insert_businesses(objects: { lat: $lat, long: $long, name: $name }) {
+      returning {
+        id
+        lat
+        long
+        name
+      }
+    }
+  }
+`;
+
 export const AddBussinessModal = ({show, onHide}: OuterProps) => {
   return (
     <InsertBussinessComponent>
@@ -131,4 +141,19 @@ export const AddBussinessModal = ({show, onHide}: OuterProps) => {
   );
 };
 
+// tmp function for testing
+const randBetween = (min: number, max: number) => {
+  const randNum =  Math.random() * (min - max) + max;
+  return parseFloat(randNum.toFixed(6));
+}
 
+const generateRandomMelbourneGps = () => {
+  const minLat = -37.838496;
+  const maxLat = -37.740402;
+  const minLong = 144.894739;
+  const maxLong = 145.015693;
+  return {
+    lat: randBetween(minLat, maxLat),
+    long: randBetween(minLong, maxLong),
+  };
+}

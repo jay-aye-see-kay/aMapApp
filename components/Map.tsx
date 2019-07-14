@@ -61,20 +61,22 @@ class MapView extends React.Component<Props, State> {
       });
     });
 
-    this.map.on('load', () => {
-      if (!this.map) return;
-      this.props.data.businesses.forEach(business => {
-         if (!this.map) return;
-         const popup = new mapboxgl.Popup({ offset: 8 })
-            .setHTML(`<h4>${business.name}</h4><p>Number of reviews: ${business.reviews.length}</p>`);
+    this.map.on('load', this.drawMarkers);
+  }
 
-         const el = document.createElement('div');
-         el.className = 'marker';
-         new mapboxgl.Marker(el)
-           .setLngLat(getLngLat(business.long, business.lat))
-           .setPopup(popup)
-           .addTo(this.map);
-      });
+  private drawMarkers = () => {
+    if (!this.map) return;
+    this.props.data.businesses.forEach(business => {
+      if (!this.map) return;
+      const popup = new mapboxgl.Popup({offset: 8})
+        .setHTML(`<h4>${business.name}</h4><p>Number of reviews: ${business.reviews.length}</p>`);
+
+      const el = document.createElement('div');
+      el.className = 'marker';
+      new mapboxgl.Marker(el)
+        .setLngLat(getLngLat(business.long, business.lat))
+        .setPopup(popup)
+        .addTo(this.map);
     });
   }
 
