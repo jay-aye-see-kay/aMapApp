@@ -2,8 +2,9 @@ import React from 'react';
 import { Alert, Button, Modal, Form } from 'react-bootstrap';
 import gql from 'graphql-tag';
 import { MutationFn } from 'react-apollo';
-import { Formik, FormikActions, FormikProps, Field, ErrorMessage } from 'formik';
+import { Formik, FormikActions, FormikProps } from 'formik';
 
+import { businessFragment } from '../queries';
 import { InsertBussinessComponent, InsertBussinessMutation, InsertBussinessMutationVariables } from '../generated/graphql';
 
 type OuterProps = {
@@ -122,13 +123,11 @@ const insertBussiness = gql`
   mutation insertBussiness ($lat: numeric!, $long: numeric!, $name: String!) {
     insert_businesses(objects: { lat: $lat, long: $long, name: $name }) {
       returning {
-        id
-        lat
-        long
-        name
+        ...business
       }
     }
   }
+  ${businessFragment}
 `;
 
 export const AddBussinessModal = ({show, onHide}: OuterProps) => {

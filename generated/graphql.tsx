@@ -858,42 +858,47 @@ export type InsertBussinessMutationVariables = {
 export type InsertBussinessMutation = { __typename?: "mutation_root" } & {
   insert_businesses: Maybe<
     { __typename?: "businesses_mutation_response" } & {
-      returning: Array<
-        { __typename?: "businesses" } & Pick<
-          Businesses,
-          "id" | "lat" | "long" | "name"
-        >
-      >;
+      returning: Array<{ __typename?: "businesses" } & BusinessFragment>;
     }
   >;
 };
+
+export type BusinessFragment = { __typename?: "businesses" } & Pick<
+  Businesses,
+  "id" | "name" | "lat" | "long"
+> & {
+    reviews: Array<
+      { __typename?: "reviews" } & Pick<Reviews, "id" | "rating" | "text">
+    >;
+  };
 
 export type BusinessListQueryQueryVariables = {};
 
 export type BusinessListQueryQuery = { __typename?: "query_root" } & {
-  businesses: Array<
-    { __typename?: "businesses" } & Pick<
-      Businesses,
-      "id" | "name" | "lat" | "long"
-    > & {
-        reviews: Array<
-          { __typename?: "reviews" } & Pick<Reviews, "id" | "rating" | "text">
-        >;
-      }
-  >;
+  businesses: Array<{ __typename?: "businesses" } & BusinessFragment>;
 };
-
+export const businessFragmentDoc = gql`
+  fragment business on businesses {
+    id
+    name
+    lat
+    long
+    reviews {
+      id
+      rating
+      text
+    }
+  }
+`;
 export const InsertBussinessDocument = gql`
   mutation insertBussiness($lat: numeric!, $long: numeric!, $name: String!) {
     insert_businesses(objects: { lat: $lat, long: $long, name: $name }) {
       returning {
-        id
-        lat
-        long
-        name
+        ...business
       }
     }
   }
+  ${businessFragmentDoc}
 `;
 export type InsertBussinessMutationFn = ReactApollo.MutationFn<
   InsertBussinessMutation,
@@ -947,17 +952,10 @@ export function withInsertBussiness<TProps, TChildProps = {}>(
 export const BusinessListQueryDocument = gql`
   query businessListQuery {
     businesses(limit: 10) {
-      id
-      name
-      lat
-      long
-      reviews {
-        id
-        rating
-        text
-      }
+      ...business
     }
   }
+  ${businessFragmentDoc}
 `;
 export type BusinessListQueryComponentProps = Omit<
   ReactApollo.QueryProps<

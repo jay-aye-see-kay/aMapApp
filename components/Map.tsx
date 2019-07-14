@@ -102,6 +102,16 @@ class MapView extends React.Component<Props, State> {
     })
   }
 
+  componentDidUpdate = (prevProps: Props) => {
+    console.log('prevProps.data', prevProps.data);
+    console.log('this.props.data', this.props.data);
+    console.log('prevProps.data !== this.props.data', prevProps.data.businesses !== this.props.data.businesses);
+
+    if (prevProps.data !== this.props.data) {
+      this.drawMarkers();
+    }
+  }
+
   private drawMarkers = () => {
     if (!this.map) return;
     this.map.addSource('businesses', {
