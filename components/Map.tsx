@@ -1,11 +1,12 @@
 import { Query } from 'react-apollo';
 import gql from 'graphql-tag';
 
+// import { } from '../generated/graphql';
+
 const MapView = ({ data }: any) => {
   console.log(data);
   return <div />
 }
-
 
 const businessListQuery = gql`
   query {
@@ -23,10 +24,6 @@ const businessListQuery = gql`
 
 export const Map = () => {
   return (
-    <Query query={businessListQuery}>
-      {({ loading, error, data }: any) => (
-        <MapView data={data} />
-      )}
-    </Query>
+    <div />
   )
 }

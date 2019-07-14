@@ -2,11 +2,17 @@
   "name": "with-apollo",
   "version": "2.0.0",
   "scripts": {
-    "dev": "next",
+    "dev": "graphql-codegen && next",
     "build": "next build",
-    "start": "next start"
+    "start": "next start",
+    "generate": "graphql-codegen"
   },
   "dependencies": {
+    "@graphql-codegen/add": "^1.4.0",
+    "@graphql-codegen/cli": "^1.4.0",
+    "@graphql-codegen/typescript": "^1.4.0",
+    "@graphql-codegen/typescript-operations": "^1.4.0",
+    "@graphql-codegen/typescript-react-apollo": "^1.4.0",
     "@types/graphql": "^14.2.2",
     "@types/node": "^12.6.2",
     "@types/react": "^16.8.23",
